@@ -3,175 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Valentine, Tasneem?</title>
+    <title>For Tasneem</title>
     <style>
         body {
-            background: linear-gradient(45deg, #ffb6c1, #ff69b4, #ff1493, #db7093);
-            background-size: 400% 400%;
-            animation: gradientBG 10s ease infinite;
-            text-align: center;
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             overflow: hidden;
-            transition: background 2s ease-in-out;
-        }
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .container {
+            background: linear-gradient(to bottom, #87CEEB, #E0F6FF); /* Nice Blue Sky */
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh; /* Full viewport height to center vertically */
-            position: relative;
-            z-index: 2;
+            flex-direction: column;
         }
-        #typed-text {
-            color: black; /* Black text */
-            font-size: 3em;
-            white-space: nowrap;
-            overflow: hidden;
-            border-right: 2px solid black; /* Black cursor */
+
+        /* --- Floating Butterflies --- */
+        .butterfly {
+            position: absolute;
+            top: -10%;
+            font-size: 24px;
+            animation: fall linear forwards;
+            z-index: 0;
+            opacity: 0.8;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* --- Page Containers --- */
+        #question-page, #celebration-page {
+            text-align: center;
+            z-index: 10;
+            position: relative;
+        }
+
+        #celebration-page {
+            display: none; /* Hidden initially */
+        }
+
+        /* --- Typing Effect --- */
+        .typing-container {
             display: inline-block;
-            position: relative;
-            margin-bottom: 20px; /* Space between text and buttons */
         }
-        .buttons-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px; /* Space between buttons */
-            margin-top: 20px;
-            position: relative;
-        }
-        button {
-            font-size: 1.5em;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-            border-radius: 10px;
-        }
-        #yes {
-            background-color: #ff69b4;
-            color: white;
-        }
-        #no {
-            background-color: #ff4444;
-            color: white;
-            position: static; /* Reset position */
-        }
-        .floating-text {
-            position: absolute;
-            font-size: 2em;
-            color: red;
+
+        .typing-text {
+            font-size: 3rem;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
             font-weight: bold;
-            animation: floatUp 3s linear infinite;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 3px solid #fff; /* Cursor */
+            width: 0;
+            animation: typing 3.5s steps(40, end) forwards, blink .75s step-end infinite;
         }
-        @keyframes floatUp {
-            from { transform: translateY(0); opacity: 1; }
-            to { transform: translateY(-100px); opacity: 0; }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
         }
+
+        @keyframes blink {
+            from, to { border-color: transparent }
+            50% { border-color: white }
+        }
+
+        /* --- Buttons --- */
+        .btn-container {
+            margin-top: 40px;
+            position: relative;
+            height: 100px; /* Space for buttons to move */
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 0 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .yes-btn {
+            background-color: #ff69b4; /* Hot Pink */
+            color: white;
+        }
+        
+        .yes-btn:hover {
+            transform: scale(1.1);
+            background-color: #ff1493;
+        }
+
+        .no-btn {
+            background-color: #fff;
+            color: #333;
+            position: absolute; /* Allows movement */
+        }
+
+        /* --- Celebration Styles --- */
         .glowing-heart {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             font-size: 100px;
             color: red;
-            text-shadow: 0 0 20px red, 0 0 40px red, 0 0 60px red;
-            display: none;
+            animation: heartbeat 1.5s infinite;
+            margin-bottom: 20px;
         }
-        .love-message {
-            display: none;
-            color: white;
-            font-size: 1.5em;
-            width: 60%;
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); text-shadow: 0 0 10px red; }
+            50% { transform: scale(1.2); text-shadow: 0 0 30px red, 0 0 60px #ff69b4; }
+            100% { transform: scale(1); text-shadow: 0 0 10px red; }
+        }
+
+        .scroll-message {
+            font-size: 2rem;
+            color: #333;
+            font-weight: bold;
+            opacity: 0;
+            transform: translateY(50px);
+            animation: slideUp 2s ease forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes slideUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .love-particle {
             position: absolute;
-            bottom: -100%;
-            left: 50%;
-            transform: translateX(-50%);
-            text-align: center;
-            animation: scrollUp 60s linear forwards; /* Slower scroll */
+            font-size: 20px;
+            color: #ff1493;
+            font-weight: bold;
+            user-select: none;
+            pointer-events: none;
+            animation: flyUp 4s linear forwards;
         }
-        @keyframes scrollUp {
-            from { bottom: -100%; }
-            to { bottom: 100%; }
+
+        @keyframes flyUp {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
         }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 id="typed-text"></h1>
-        <div class="buttons-container">
-            <button id="yes" onclick="showExplosion()">Yes ❤️</button>
-            <button id="no">No 💔</button>
+
+    <div id="butterfly-container"></div>
+
+    <div id="question-page">
+        <div class="typing-container">
+            <h1 class="typing-text">Will you be my Valentine, Tasneem?</h1>
+        </div>
+        <div class="btn-container">
+            <button class="yes-btn" onclick="sayYes()">YES</button>
+            <button class="no-btn" id="noBtn" onmouseover="moveButton()" onclick="moveButton()">NO</button>
         </div>
     </div>
-    <div class="glowing-heart" id="heart">❤️</div>
-    <div class="love-message" id="loveMessage">
-        I love you more than words can ever fully express, and I feel so unbelievably lucky to have you by my side.
-        Every single moment we’ve shared together is something I hold close to my heart, and I cherish those memories
-        more than anything. You bring so much joy, warmth, and meaning into my life, and I appreciate you more than you
-        could ever know. There’s no one else in this world who could ever compare to you or your kindness or your laughter or
-        your unique way of seeing the world, and the way you make me feel so loved and understood. You’re truly one of a kind,
-        and I’m so grateful for every second we’ve had together and for all the moments still to come. You mean everything to me,
-        and I’ll never stop being thankful for the love and happiness you’ve brought into my life.
-    </div>
-    
-    <script>
-        // Typing Effect
-        const text = "Will You Be My Valentine, Tasneem?"; // Updated question
-        let index = 0;
-        const typedTextElem = document.getElementById("typed-text");
 
-        function typeText() {
-            if (index < text.length) {
-                typedTextElem.textContent += text.charAt(index);
-                index++;
-                setTimeout(typeText, 100);
-            } else {
-                typedTextElem.style.borderRight = "none";
+    <div id="celebration-page">
+        <div class="glowing-heart">❤️</div>
+        <div class="scroll-message">
+            Yay! You made me the happiest person!<br>
+            I love you, Tasneem! <br>
+            <span style="font-size: 1.2rem; color: #555;">- Amer</span>
+        </div>
+    </div>
+
+    <script>
+        // --- Butterfly Generator ---
+        function createButterflies() {
+            const container = document.getElementById('butterfly-container');
+            const butterflyCount = 20; // Number of butterflies
+
+            for (let i = 0; i < butterflyCount; i++) {
+                const b = document.createElement('div');
+                b.classList.add('butterfly');
+                b.innerText = '🦋';
+                b.style.left = Math.random() * 100 + 'vw';
+                b.style.animationDuration = (Math.random() * 5 + 5) + 's'; // Random speed 5-10s
+                b.style.fontSize = (Math.random() * 20 + 20) + 'px'; // Random size
+                b.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(b);
             }
         }
-        document.addEventListener("DOMContentLoaded", typeText);
+        createButterflies();
 
-        // No Button Moves Away
-        const noButton = document.getElementById("no");
-        const buttonsContainer = document.querySelector(".buttons-container");
-        const maxDistance = 100; // Maximum distance the "No" button can move
+        // --- No Button Logic (Run away) ---
+        const noBtn = document.getElementById('noBtn');
+        
+        function moveButton() {
+            const x = Math.random() * (window.innerWidth - 200) - (window.innerWidth / 2 - 100);
+            const y = Math.random() * (window.innerHeight - 200) - (window.innerHeight / 2 - 100);
+            
+            // Apply translation directly
+            noBtn.style.transform = `translate(${x}px, ${y}px)`;
+        }
 
-        noButton.addEventListener("mouseover", () => {
-            const containerRect = buttonsContainer.getBoundingClientRect();
-            const buttonRect = noButton.getBoundingClientRect();
+        // --- Yes Button Logic ---
+        function sayYes() {
+            // Hide question, show celebration
+            document.getElementById('question-page').style.display = 'none';
+            document.getElementById('celebration-page').style.display = 'block';
 
-            // Calculate new position within a small range
-            const newX = Math.random() * (maxDistance * 2) - maxDistance;
-            const newY = Math.random() * (maxDistance * 2) - maxDistance;
+            // Start the "I ❤️ U" rain
+            setInterval(createLove, 200);
+        }
 
-            noButton.style.transform = `translate(${newX}px, ${newY}px)`;
-        });
+        // --- I ❤️ U Particles ---
+        function createLove() {
+            const love = document.createElement('div');
+            love.classList.add('love-particle');
+            love.innerText = 'I ❤️ U';
+            love.style.left = Math.random() * 100 + 'vw';
+            love.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            document.body.appendChild(love);
 
-        // Hearts and Message Effect
-        function showExplosion() {
-            document.querySelector(".buttons-container").style.display = "none";
-            document.getElementById("heart").style.display = "block";
-            document.body.style.background = "black";
-            document.getElementById("typed-text").style.display = "none";
-            document.getElementById("loveMessage").style.display = "block";
-            setInterval(() => {
-                const heart = document.createElement("div");
-                heart.classList.add("floating-text");
-                heart.textContent = Math.random() > 0.5 ? "❤️" : "I ❤️ U";
-                document.body.appendChild(heart);
-                heart.style.left = Math.random() * window.innerWidth + "px";
-                heart.style.top = Math.random() * window.innerHeight + "px";
-                heart.style.animationDuration = (Math.random() * 2 + 2) + "s";
-            }, 200);
+            // Clean up old particles
+            setTimeout(() => {
+                love.remove();
+            }, 4000);
         }
     </script>
 </body>
 </html>
-
