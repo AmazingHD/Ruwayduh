@@ -20,43 +20,32 @@
             flex-direction: column;
         }
 
-        /* --- Floating Blue Butterflies --- */
+        /* --- Butterfly Styles --- */
         .butterfly {
             position: absolute;
-            top: -10%;
             font-size: 24px;
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
             user-select: none;
             pointer-events: none;
             z-index: 1;
-            /* Use the emoji 🦋 which is naturally blue */
         }
 
-        /* Animation for falling AND swaying naturally */
-        @keyframes flutter {
-            0% {
-                transform: translate(0, 0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            25% {
-                transform: translate(50px, 25vh) rotate(15deg);
-            }
-            50% {
-                transform: translate(-50px, 50vh) rotate(-15deg);
-            }
-            75% {
-                transform: translate(50px, 75vh) rotate(15deg);
-            }
-            100% {
-                transform: translate(0, 110vh) rotate(0deg);
-                opacity: 0.8;
-            }
+        /* Animation 1: Falling Down */
+        @keyframes fall {
+            0% { transform: translate(0, -10vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translate(0, 110vh) rotate(20deg); opacity: 0.8; }
         }
 
-        /* --- Page Containers --- */
+        /* Animation 2: Flying Up */
+        @keyframes fly {
+            0% { transform: translate(0, 110vh) scale(0.8); opacity: 0; }
+            10% { opacity: 1; }
+            50% { transform: translate(50px, 50vh) scale(1); }
+            100% { transform: translate(-50px, -10vh) scale(0.8); opacity: 0.8; }
+        }
+
+        /* --- Page Layout --- */
         #question-page {
             text-align: center;
             z-index: 10;
@@ -65,6 +54,7 @@
             align-items: center;
             justify-content: center;
             width: 100%;
+            height: 100%; /* Full height to control button area */
         }
 
         #celebration-page {
@@ -77,12 +67,11 @@
 
         /* --- Typing Effect --- */
         .typing-container {
-            display: inline-block;
             margin-bottom: 40px;
         }
 
         .typing-text {
-            font-size: 3rem; /* Big text */
+            font-size: 3rem;
             color: #fff;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
             font-weight: bold;
@@ -93,7 +82,6 @@
             animation: typing 4s steps(40, end) forwards, blink .75s step-end infinite;
         }
 
-        /* Responsive font size for mobile */
         @media (max-width: 600px) {
             .typing-text { font-size: 1.5rem; }
         }
@@ -101,14 +89,14 @@
         @keyframes typing { from { width: 0 } to { width: 100% } }
         @keyframes blink { from, to { border-color: transparent } 50% { border-color: white } }
 
-        /* --- Centered Buttons --- */
+        /* --- Buttons --- */
         .btn-container {
             display: flex;
-            justify-content: center; /* This ensures they are in the middle */
+            justify-content: center;
             align-items: center;
-            gap: 40px; /* Space between buttons */
+            gap: 40px;
             width: 100%;
-            position: relative;
+            height: 100px; /* fixed height area for initial buttons */
         }
 
         button {
@@ -117,7 +105,7 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.2s ease, background 0.3s;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             font-weight: bold;
             z-index: 100;
@@ -136,11 +124,10 @@
         .no-btn {
             background-color: #fff;
             color: #333;
-            /* Must be absolute to move freely without breaking layout */
-            position: relative; 
+            position: absolute; /* Allows movement */
         }
 
-        /* --- Celebration Styles --- */
+        /* --- Celebration Message --- */
         .glowing-heart {
             font-size: 100px;
             color: red;
@@ -169,7 +156,7 @@
             font-size: 1.3rem;
             color: #333;
             line-height: 1.6;
-            font-family: 'Georgia', serif; /* prettier font for the letter */
+            font-family: 'Georgia', serif;
         }
 
         @keyframes slideUp {
@@ -221,72 +208,66 @@
     </div>
 
     <script>
-        // --- Natural Blue Butterfly Generator ---
+        // --- Mixed Butterfly Generator ---
         function createButterflies() {
             const container = document.getElementById('butterfly-container');
-            const butterflyCount = 50; // MORE butterflies
+            const butterflyCount = 40; 
 
             for (let i = 0; i < butterflyCount; i++) {
                 const b = document.createElement('div');
                 b.classList.add('butterfly');
-                b.innerText = '🦋'; // Naturally blue emoji
-                
-                // Random horizontal start position
+                b.innerText = '🦋'; 
                 b.style.left = Math.random() * 100 + 'vw';
-                
-                // Randomize animation speed (slower = more graceful)
-                const duration = Math.random() * 5 + 8; // Between 8s and 13s
-                b.style.animation = `flutter ${duration}s linear infinite`;
-                
-                // Random delay so they don't all start at once
-                b.style.animationDelay = Math.random() * 10 + 's';
-                
-                // Random size
                 b.style.fontSize = (Math.random() * 20 + 20) + 'px';
                 
+                // Randomly choose between Falling or Flying
+                if (Math.random() > 0.5) {
+                    // Falling
+                    b.style.animation = `fall ${Math.random() * 5 + 8}s linear infinite`;
+                } else {
+                    // Flying
+                    b.style.animation = `fly ${Math.random() * 5 + 10}s linear infinite`;
+                }
+                
+                b.style.animationDelay = Math.random() * 10 + 's';
                 container.appendChild(b);
             }
         }
         createButterflies();
 
-        // --- Runaway No Button ---
+        // --- Smart No Button Logic ---
         const noBtn = document.getElementById('noBtn');
-        
+
+        // Set initial position relative to the container so it starts next to YES
+        noBtn.style.position = 'relative';
+
         function moveButton() {
-            // When moving, we change position to absolute so it breaks free from the center
+            // Calculate available screen space (minus padding of 100px to be safe)
+            const maxWidth = window.innerWidth - 150;
+            const maxHeight = window.innerHeight - 100;
+
+            // Generate random X and Y
+            // Math.max(20, ...) ensures it doesn't go too far left/top
+            const randomX = Math.max(20, Math.random() * maxWidth);
+            const randomY = Math.max(20, Math.random() * maxHeight);
+
+            // Apply absolute position to move it anywhere on screen
             noBtn.style.position = 'absolute';
-            
-            // Calculate random position within the window
-            const x = Math.random() * (window.innerWidth - 150);
-            const y = Math.random() * (window.innerHeight - 150);
-            
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
         }
 
         // --- Yes Button Logic ---
         function sayYes() {
             document.getElementById('question-page').style.display = 'none';
             document.getElementById('celebration-page').style.display = 'block';
-
-            // Start the "I ❤️ U" rain
-            setInterval(createLove, 100); // Faster rain
+            
+            // Trigger "I ❤️ U" rain
+            setInterval(createLove, 100);
         }
 
-        // --- I ❤️ U Particles ---
+        // --- Love Particles ---
         function createLove() {
             const love = document.createElement('div');
             love.classList.add('love-particle');
-            love.innerText = 'I ❤️ U';
-            love.style.left = Math.random() * 100 + 'vw';
-            love.style.fontSize = (Math.random() * 20 + 15) + 'px';
-            love.style.color = Math.random() > 0.5 ? '#ff1493' : '#ff69b4'; // Pink variations
-            document.body.appendChild(love);
-
-            setTimeout(() => {
-                love.remove();
-            }, 4000);
-        }
-    </script>
-</body>
-</html>
+            love.innerText = 'I
