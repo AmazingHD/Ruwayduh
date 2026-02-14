@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For Tasneem</title>
     <style>
+        /* --- General Setup --- */
         body {
             margin: 0;
             padding: 0;
@@ -12,70 +13,102 @@
             background: linear-gradient(to bottom, #87CEEB, #E0F6FF); /* Nice Blue Sky */
             font-family: 'Arial', sans-serif;
             height: 100vh;
+            width: 100vw;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
         }
 
-        /* --- Floating Butterflies --- */
+        /* --- Floating Blue Butterflies --- */
         .butterfly {
             position: absolute;
             top: -10%;
             font-size: 24px;
-            animation: fall linear forwards;
-            z-index: 0;
-            opacity: 0.8;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            user-select: none;
+            pointer-events: none;
+            z-index: 1;
+            /* Use the emoji 🦋 which is naturally blue */
         }
 
-        @keyframes fall {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(110vh) rotate(360deg); }
+        /* Animation for falling AND swaying naturally */
+        @keyframes flutter {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            25% {
+                transform: translate(50px, 25vh) rotate(15deg);
+            }
+            50% {
+                transform: translate(-50px, 50vh) rotate(-15deg);
+            }
+            75% {
+                transform: translate(50px, 75vh) rotate(15deg);
+            }
+            100% {
+                transform: translate(0, 110vh) rotate(0deg);
+                opacity: 0.8;
+            }
         }
 
         /* --- Page Containers --- */
-        #question-page, #celebration-page {
+        #question-page {
             text-align: center;
             z-index: 10;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
         }
 
         #celebration-page {
             display: none; /* Hidden initially */
+            text-align: center;
+            z-index: 10;
+            width: 80%;
+            max-width: 700px;
         }
 
         /* --- Typing Effect --- */
         .typing-container {
             display: inline-block;
+            margin-bottom: 40px;
         }
 
         .typing-text {
-            font-size: 3rem;
+            font-size: 3rem; /* Big text */
             color: #fff;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
             font-weight: bold;
             overflow: hidden;
             white-space: nowrap;
-            border-right: 3px solid #fff; /* Cursor */
+            border-right: 3px solid #fff;
             width: 0;
-            animation: typing 3.5s steps(40, end) forwards, blink .75s step-end infinite;
+            animation: typing 4s steps(40, end) forwards, blink .75s step-end infinite;
         }
 
-        @keyframes typing {
-            from { width: 0 }
-            to { width: 100% }
+        /* Responsive font size for mobile */
+        @media (max-width: 600px) {
+            .typing-text { font-size: 1.5rem; }
         }
 
-        @keyframes blink {
-            from, to { border-color: transparent }
-            50% { border-color: white }
-        }
+        @keyframes typing { from { width: 0 } to { width: 100% } }
+        @keyframes blink { from, to { border-color: transparent } 50% { border-color: white } }
 
-        /* --- Buttons --- */
+        /* --- Centered Buttons --- */
         .btn-container {
-            margin-top: 40px;
+            display: flex;
+            justify-content: center; /* This ensures they are in the middle */
+            align-items: center;
+            gap: 40px; /* Space between buttons */
+            width: 100%;
             position: relative;
-            height: 100px; /* Space for buttons to move */
         }
 
         button {
@@ -84,13 +117,14 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s;
-            margin: 0 20px;
+            transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-weight: bold;
+            z-index: 100;
         }
 
         .yes-btn {
-            background-color: #ff69b4; /* Hot Pink */
+            background-color: #ff69b4;
             color: white;
         }
         
@@ -102,7 +136,8 @@
         .no-btn {
             background-color: #fff;
             color: #333;
-            position: absolute; /* Allows movement */
+            /* Must be absolute to move freely without breaking layout */
+            position: relative; 
         }
 
         /* --- Celebration Styles --- */
@@ -110,7 +145,7 @@
             font-size: 100px;
             color: red;
             animation: heartbeat 1.5s infinite;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         @keyframes heartbeat {
@@ -119,14 +154,22 @@
             100% { transform: scale(1); text-shadow: 0 0 10px red; }
         }
 
-        .scroll-message {
-            font-size: 2rem;
-            color: #333;
-            font-weight: bold;
+        .message-box {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             opacity: 0;
             transform: translateY(50px);
             animation: slideUp 2s ease forwards;
-            animation-delay: 0.5s;
+            animation-delay: 0.2s;
+        }
+
+        .message-text {
+            font-size: 1.3rem;
+            color: #333;
+            line-height: 1.6;
+            font-family: 'Georgia', serif; /* prettier font for the letter */
         }
 
         @keyframes slideUp {
@@ -141,6 +184,7 @@
             user-select: none;
             pointer-events: none;
             animation: flyUp 4s linear forwards;
+            z-index: 5;
         }
 
         @keyframes flyUp {
@@ -158,6 +202,7 @@
         <div class="typing-container">
             <h1 class="typing-text">Will you be my Valentine, Tasneem?</h1>
         </div>
+        
         <div class="btn-container">
             <button class="yes-btn" onclick="sayYes()">YES</button>
             <button class="no-btn" id="noBtn" onmouseover="moveButton()" onclick="moveButton()">NO</button>
@@ -166,51 +211,66 @@
 
     <div id="celebration-page">
         <div class="glowing-heart">❤️</div>
-        <div class="scroll-message">
-            Yay! You made me the happiest person!<br>
-            I love you, Tasneem! <br>
-            <span style="font-size: 1.2rem; color: #555;">- Amer</span>
+        <div class="message-box">
+            <p class="message-text">
+                I never really celebrate this stupid day, but since I love you, I wanted to make this for you. <br><br>
+                I never thought you'd say yes, but I love you so much, my love. Whenever things get heavy or stressful, I just think of you and everything feels better. You have this way of lighting up my world that nobody else can. <br><br>
+                Between your laugh and your soul, you’re easily the most beautiful thing in my life. I can't wait to get married to you one day so I can make a bigger gift than just this.
+            </p>
         </div>
     </div>
 
     <script>
-        // --- Butterfly Generator ---
+        // --- Natural Blue Butterfly Generator ---
         function createButterflies() {
             const container = document.getElementById('butterfly-container');
-            const butterflyCount = 20; // Number of butterflies
+            const butterflyCount = 50; // MORE butterflies
 
             for (let i = 0; i < butterflyCount; i++) {
                 const b = document.createElement('div');
                 b.classList.add('butterfly');
-                b.innerText = '🦋';
+                b.innerText = '🦋'; // Naturally blue emoji
+                
+                // Random horizontal start position
                 b.style.left = Math.random() * 100 + 'vw';
-                b.style.animationDuration = (Math.random() * 5 + 5) + 's'; // Random speed 5-10s
-                b.style.fontSize = (Math.random() * 20 + 20) + 'px'; // Random size
-                b.style.animationDelay = Math.random() * 5 + 's';
-                document.body.appendChild(b);
+                
+                // Randomize animation speed (slower = more graceful)
+                const duration = Math.random() * 5 + 8; // Between 8s and 13s
+                b.style.animation = `flutter ${duration}s linear infinite`;
+                
+                // Random delay so they don't all start at once
+                b.style.animationDelay = Math.random() * 10 + 's';
+                
+                // Random size
+                b.style.fontSize = (Math.random() * 20 + 20) + 'px';
+                
+                container.appendChild(b);
             }
         }
         createButterflies();
 
-        // --- No Button Logic (Run away) ---
+        // --- Runaway No Button ---
         const noBtn = document.getElementById('noBtn');
         
         function moveButton() {
-            const x = Math.random() * (window.innerWidth - 200) - (window.innerWidth / 2 - 100);
-            const y = Math.random() * (window.innerHeight - 200) - (window.innerHeight / 2 - 100);
+            // When moving, we change position to absolute so it breaks free from the center
+            noBtn.style.position = 'absolute';
             
-            // Apply translation directly
-            noBtn.style.transform = `translate(${x}px, ${y}px)`;
+            // Calculate random position within the window
+            const x = Math.random() * (window.innerWidth - 150);
+            const y = Math.random() * (window.innerHeight - 150);
+            
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
         }
 
         // --- Yes Button Logic ---
         function sayYes() {
-            // Hide question, show celebration
             document.getElementById('question-page').style.display = 'none';
             document.getElementById('celebration-page').style.display = 'block';
 
             // Start the "I ❤️ U" rain
-            setInterval(createLove, 200);
+            setInterval(createLove, 100); // Faster rain
         }
 
         // --- I ❤️ U Particles ---
@@ -220,9 +280,9 @@
             love.innerText = 'I ❤️ U';
             love.style.left = Math.random() * 100 + 'vw';
             love.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            love.style.color = Math.random() > 0.5 ? '#ff1493' : '#ff69b4'; // Pink variations
             document.body.appendChild(love);
 
-            // Clean up old particles
             setTimeout(() => {
                 love.remove();
             }, 4000);
