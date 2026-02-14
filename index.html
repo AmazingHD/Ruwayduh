@@ -18,21 +18,23 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            position: relative;
         }
 
         /* --- Butterfly Styles --- */
         .butterfly {
             position: absolute;
+            top: -50px; /* Start above screen */
             font-size: 24px;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
             user-select: none;
             pointer-events: none;
-            z-index: 1;
+            z-index: 1; /* Behind text but visible */
+            opacity: 0.9;
         }
 
         /* Animation 1: Falling Down */
         @keyframes fall {
-            0% { transform: translate(0, -10vh) rotate(0deg); opacity: 0; }
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
             10% { opacity: 1; }
             100% { transform: translate(0, 110vh) rotate(20deg); opacity: 0.8; }
         }
@@ -41,8 +43,7 @@
         @keyframes fly {
             0% { transform: translate(0, 110vh) scale(0.8); opacity: 0; }
             10% { opacity: 1; }
-            50% { transform: translate(50px, 50vh) scale(1); }
-            100% { transform: translate(-50px, -10vh) scale(0.8); opacity: 0.8; }
+            100% { transform: translate(-50px, -20vh) scale(0.8); opacity: 0.8; }
         }
 
         /* --- Page Layout --- */
@@ -54,11 +55,10 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            height: 100%; /* Full height to control button area */
         }
 
         #celebration-page {
-            display: none; /* Hidden initially */
+            display: none;
             text-align: center;
             z-index: 10;
             width: 80%;
@@ -66,10 +66,6 @@
         }
 
         /* --- Typing Effect --- */
-        .typing-container {
-            margin-bottom: 40px;
-        }
-
         .typing-text {
             font-size: 3rem;
             color: #fff;
@@ -80,10 +76,7 @@
             border-right: 3px solid #fff;
             width: 0;
             animation: typing 4s steps(40, end) forwards, blink .75s step-end infinite;
-        }
-
-        @media (max-width: 600px) {
-            .typing-text { font-size: 1.5rem; }
+            margin-bottom: 50px;
         }
 
         @keyframes typing { from { width: 0 } to { width: 100% } }
@@ -94,9 +87,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 40px;
+            gap: 50px; /* Space between buttons */
             width: 100%;
-            height: 100px; /* fixed height area for initial buttons */
+            position: relative;
+            min-height: 80px;
         }
 
         button {
@@ -105,7 +99,7 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s ease, background 0.3s;
+            transition: transform 0.2s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             font-weight: bold;
             z-index: 100;
@@ -114,6 +108,7 @@
         .yes-btn {
             background-color: #ff69b4;
             color: white;
+            position: relative; /* Stays in place */
         }
         
         .yes-btn:hover {
@@ -124,7 +119,8 @@
         .no-btn {
             background-color: #fff;
             color: #333;
-            position: absolute; /* Allows movement */
+            position: relative; /* IMPORTANT: Starts relative so it sits next to YES */
+            transition: top 0.3s, left 0.3s; /* Smooth movement */
         }
 
         /* --- Celebration Message --- */
@@ -146,10 +142,7 @@
             padding: 30px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            opacity: 0;
-            transform: translateY(50px);
             animation: slideUp 2s ease forwards;
-            animation-delay: 0.2s;
         }
 
         .message-text {
@@ -160,18 +153,18 @@
         }
 
         @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .love-particle {
             position: absolute;
             font-size: 20px;
-            color: #ff1493;
             font-weight: bold;
             user-select: none;
             pointer-events: none;
             animation: flyUp 4s linear forwards;
-            z-index: 5;
+            z-index: 200;
         }
 
         @keyframes flyUp {
@@ -183,12 +176,8 @@
 </head>
 <body>
 
-    <div id="butterfly-container"></div>
-
     <div id="question-page">
-        <div class="typing-container">
-            <h1 class="typing-text">Will you be my Valentine, Tasneem?</h1>
-        </div>
+        <h1 class="typing-text">Will you be my Valentine, Tasneem?</h1>
         
         <div class="btn-container">
             <button class="yes-btn" onclick="sayYes()">YES</button>
@@ -208,66 +197,71 @@
     </div>
 
     <script>
-        // --- Mixed Butterfly Generator ---
-        function createButterflies() {
-            const container = document.getElementById('butterfly-container');
+        // --- 1. Butterfly Generator (Runs automatically) ---
+        window.onload = function() {
             const butterflyCount = 40; 
-
+            
             for (let i = 0; i < butterflyCount; i++) {
                 const b = document.createElement('div');
                 b.classList.add('butterfly');
                 b.innerText = '🦋'; 
-                b.style.left = Math.random() * 100 + 'vw';
+                b.style.left = Math.random() * 95 + 'vw'; // Random horizontal pos
                 b.style.fontSize = (Math.random() * 20 + 20) + 'px';
                 
-                // Randomly choose between Falling or Flying
+                // Randomly choose falling or flying
                 if (Math.random() > 0.5) {
-                    // Falling
-                    b.style.animation = `fall ${Math.random() * 5 + 8}s linear infinite`;
+                    b.style.animation = `fall ${Math.random() * 5 + 5}s linear infinite`;
                 } else {
-                    // Flying
-                    b.style.animation = `fly ${Math.random() * 5 + 10}s linear infinite`;
+                    b.style.animation = `fly ${Math.random() * 5 + 5}s linear infinite`;
                 }
                 
-                b.style.animationDelay = Math.random() * 10 + 's';
-                container.appendChild(b);
+                // Random delay
+                b.style.animationDelay = Math.random() * 5 + 's';
+                document.body.appendChild(b);
             }
-        }
-        createButterflies();
+        };
 
-        // --- Smart No Button Logic ---
+        // --- 2. Smart No Button (Runs Away) ---
         const noBtn = document.getElementById('noBtn');
 
-        // Set initial position relative to the container so it starts next to YES
-        noBtn.style.position = 'relative';
-
         function moveButton() {
-            // Calculate available screen space (minus padding of 100px to be safe)
-            const maxWidth = window.innerWidth - 150;
-            const maxHeight = window.innerHeight - 100;
+            // Screen boundaries
+            const maxWidth = window.innerWidth - 100; // Keep it inside width
+            const maxHeight = window.innerHeight - 100; // Keep it inside height
 
-            // Generate random X and Y
-            // Math.max(20, ...) ensures it doesn't go too far left/top
-            const randomX = Math.max(20, Math.random() * maxWidth);
-            const randomY = Math.max(20, Math.random() * maxHeight);
+            // New Random Position
+            const newX = Math.random() * maxWidth;
+            const newY = Math.random() * maxHeight;
 
-            // Apply absolute position to move it anywhere on screen
-            noBtn.style.position = 'absolute';
-            noBtn.style.left = randomX + 'px';
-            noBtn.style.top = randomY + 'px';
+            // Apply absolute position NOW to move it
+            noBtn.style.position = 'absolute'; 
+            noBtn.style.left = newX + 'px';
+            noBtn.style.top = newY + 'px';
         }
 
-        // --- Yes Button Logic ---
+        // --- 3. Yes Button Logic ---
         function sayYes() {
             document.getElementById('question-page').style.display = 'none';
             document.getElementById('celebration-page').style.display = 'block';
             
-            // Trigger "I ❤️ U" rain
+            // Start Love Rain
             setInterval(createLove, 100);
         }
 
-        // --- Love Particles ---
+        // --- 4. Love Particles ---
         function createLove() {
             const love = document.createElement('div');
             love.classList.add('love-particle');
-            love.innerText = 'I
+            love.innerText = 'I ❤️ U';
+            love.style.left = Math.random() * 100 + 'vw';
+            love.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            love.style.color = Math.random() > 0.5 ? '#ff1493' : '#ff69b4';
+            document.body.appendChild(love);
+
+            setTimeout(() => {
+                love.remove();
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
